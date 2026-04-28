@@ -5,6 +5,9 @@ on:
     - cron: '0 4 * * 1'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   backup:
     runs-on: ubuntu-latest
@@ -20,23 +23,15 @@ jobs:
           set -e
           mkdir -p backups
           DATE=$(date +%Y-%m-%d)
-          
-          # Secret'lerin var oldugunu kontrol et
           if [ -z "$SUPABASE_URL" ]; then echo "ERROR: SUPABASE_URL bos"; exit 1; fi
           if [ -z "$SUPABASE_KEY" ]; then echo "ERROR: SUPABASE_KEY bos"; exit 1; fi
           
-          echo "URL uzunlugu: ${#SUPABASE_URL}"
-          echo "KEY uzunlugu: ${#SUPABASE_KEY}"
-          
-          # responses tablosu - --fail ile hata kodu, --show-error ile mesaj
-          echo "responses indiriliyor..."
           curl --fail --show-error --silent \
             -H "apikey: ${SUPABASE_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_KEY}" \
             "${SUPABASE_URL}/rest/v1/responses?select=*&order=created_at.asc" \
             -o "backups/responses_${DATE}.json"
           
-          echo "feedback indiriliyor..."
           curl --fail --show-error --silent \
             -H "apikey: ${SUPABASE_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_KEY}" \
@@ -44,7 +39,6 @@ jobs:
             -o "backups/feedback_${DATE}.json"
           
           echo "Tamamlandi: ${DATE}"
-          echo "Dosyalar:"
           ls -la backups/
           echo "Yanit sayisi: $(python3 -c "import json; print(len(json.load(open('backups/responses_${DATE}.json'))))")"
           echo "Feedback sayisi: $(python3 -c "import json; print(len(json.load(open('backups/feedback_${DATE}.json'))))")"
