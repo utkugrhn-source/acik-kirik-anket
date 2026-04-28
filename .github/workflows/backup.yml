@@ -17,25 +17,47 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
+          set -e
           mkdir -p backups
           DATE=$(date +%Y-%m-%d)
-          curl -s \
-            -H "apikey: $SUPABASE_KEY" \
-            -H "Authorization: Bearer $SUPABASE_KEY" \
-            "$SUPABASE_URL/rest/v1/responses?select=*&order=created_at.asc" \
+          
+          # Secret'lerin var oldugunu kontrol et
+          if [ -z "$SUPABASE_URL" ]; then echo "ERROR: SUPABASE_URL bos"; exit 1; fi
+          if [ -z "$SUPABASE_KEY" ]; then echo "ERROR: SUPABASE_KEY bos"; exit 1; fi
+          
+          echo "URL uzunlugu: ${#SUPABASE_URL}"
+          echo "KEY uzunlugu: ${#SUPABASE_KEY}"
+          
+          # responses tablosu - --fail ile hata kodu, --show-error ile mesaj
+          echo "responses indiriliyor..."
+          curl --fail --show-error --silent \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}" \
+            "${SUPABASE_URL}/rest/v1/responses?select=*&order=created_at.asc" \
             -o "backups/responses_${DATE}.json"
-          curl -s \
-            -H "apikey: $SUPABASE_KEY" \
-            -H "Authorization: Bearer $SUPABASE_KEY" \
-            "$SUPABASE_URL/rest/v1/researcher_feedback?select=*&order=created_at.asc" \
+          
+          echo "feedback indiriliyor..."
+          curl --fail --show-error --silent \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}" \
+            "${SUPABASE_URL}/rest/v1/researcher_feedback?select=*&order=created_at.asc" \
             -o "backups/feedback_${DATE}.json"
+          
           echo "Tamamlandi: ${DATE}"
-          echo "Yanit sayisi: $(python3 -c 'import json; d=json.load(open("backups/responses_'${DATE}'.json")); print(len(d) if isinstance(d,list) else "hata")')"
+          echo "Dosyalar:"
+          ls -la backups/
+          echo "Yanit sayisi: $(python3 -c "import json; print(len(json.load(open('backups/responses_${DATE}.json'))))")"
+          echo "Feedback sayisi: $(python3 -c "import json; print(len(json.load(open('backups/feedback_${DATE}.json'))))")"
 
       - name: Commit et
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add backups/
-          git diff --staged --quiet || git commit -m "Otomatik yedekleme - $(date +%Y-%m-%d)"
-          git push
+          if git diff --staged --quiet; then
+            echo "Yedeklenecek yeni veri yok"
+          else
+            git commit -m "Otomatik yedekleme - $(date +%Y-%m-%d)"
+            git push
+            echo "Yedek commit edildi"
+          fi
