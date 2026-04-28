@@ -1,8 +1,9 @@
-name: Haftalik Supabase Yedekleme
+name: Supabase Yedekleme (6 Gunde Bir)
 
 on:
   schedule:
-    - cron: '0 4 * * 1'
+    # Ayin 1, 7, 13, 19, 25, 31 inde 04:00 UTC (07:00 TR) — max 6 gun ara
+    - cron: '0 4 1,7,13,19,25,31 * *'
   workflow_dispatch:
 
 permissions:
