@@ -52,7 +52,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g0);color:var(
 .bn{display:flex;align-items:flex-start;gap:6px;font-size:12px;font-style:italic;padding:5px 9px;border-radius:5px;margin:3px 0 9px;transition:.2s}
 .bn.ot{background:var(--ob);color:var(--og);border-left:3px solid var(--og)}
 .bn.eh{background:var(--ebb);color:var(--eb);border-left:3px solid var(--eb)}
-.bn .bd{font-weight:800;font-style:normal;font-size:10px;padding:1px 5px;border-radius:3px;flex-shrink:0;margin-top:1px}
+.bn .bd{font-weight:800;font-style:normal;font-size:10px;padding:2px 7px;border-radius:3px;flex-shrink:0;margin-top:1px;white-space:nowrap}
 .bn.ot .bd{background:var(--og);color:#fff}
 .bn.eh .bd{background:var(--eb);color:#fff}
 .bn.hide{display:none!important}
@@ -107,6 +107,41 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g0);color:var(
   .lkn{font-size:16px}
   .lkd{font-size:9px}
 }
+
+.qc-cond{border-left:3px solid var(--accent,#9333ea);background:rgba(147,51,234,0.04);position:relative}
+.qc-cond::before{content:"⤷";position:absolute;left:8px;top:14px;font-size:18px;color:var(--accent,#9333ea);opacity:0.6}
+.qc-cond .ql{padding-left:24px}
+.qc-cond .bn,.qc-cond .qs,.qc-cond .opts{margin-left:24px}
+
+/* === Multi-step wizard === */
+.step{display:none;animation:stepFade 0.25s ease-out}
+.step.active{display:block}
+@keyframes stepFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Progress bar */
+.prog-wrap{position:sticky;top:0;z-index:100;background:var(--bg,#fafafa);padding:14px 0 10px;margin:0 -16px 16px;padding-left:16px;padding-right:16px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.prog-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mt,#666);margin-bottom:6px;font-weight:600}
+.prog-meta .prog-step{color:var(--accent,#0066cc)}
+.prog-bar{height:6px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--og,#0066cc),var(--eb,#9333ea));border-radius:3px;transition:width 0.4s ease;width:0}
+@media (max-width: 600px){
+  .prog-wrap{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+  .prog-meta{font-size:11px}
+}
+
+/* Step navigation */
+.step-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;padding-top:18px;border-top:1px solid rgba(0,0,0,0.08)}
+.step-btn{padding:11px 22px;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;transition:.2s;font-family:inherit}
+.step-btn:disabled{opacity:0.35;cursor:not-allowed}
+.btn-prev{background:rgba(0,0,0,0.05);color:var(--mt,#444)}
+.btn-prev:hover:not(:disabled){background:rgba(0,0,0,0.1)}
+.btn-next{background:var(--og,#0066cc);color:#fff;margin-left:auto}
+.btn-next:hover:not(:disabled){filter:brightness(1.1)}
+.btn-next::after{content:" →"}
+.btn-prev::before{content:"← "}
+@media (max-width: 600px){
+  .step-btn{padding:10px 16px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -150,42 +185,70 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g0);color:var(
   <p class="gsrc">Gustilo RB, Anderson JT. J Bone Joint Surg Am. 1976;58(4):453–458.</p>
 </div>
 
-<div class="sec"><span class="sn">1</span><span id="s1">Demografik Bilgiler</span></div>
+<div class="prog-wrap" id="prog-wrap">
+  <div class="prog-meta"><span id="prog-section-name">Bölüm 1: Demografik Bilgiler</span><span class="prog-step"><span id="prog-current">1</span>/8</span></div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+</div>
+<div class="step" data-step="1"><div class="sec"><span class="sn">1</span><span id="s1">Demografik Bilgiler</span></div>
 <div class="qc"><p class="ql"><span class="qn">D1</span><span id="d1-q">Uzmanlık dalınız nedir?</span></p><div class="opts"><label class="ol"><input type="radio" name="d1" value="ot"><span class="ot" id="d1-1">Ortopedi ve Travmatoloji</span></label><label class="ol"><input type="radio" name="d1" value="eh"><span class="ot" id="d1-2">Enfeksiyon Hastalıkları</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">D2</span><span id="d2-q">Uzmanlık sonrası deneyim süreniz ne kadardır?</span></p><div class="opts"><label class="ol"><input type="radio" name="d2" value="asistan"><span class="ot" id="d2-1">Asistan doktor (uzmanlık eğitimi devam ediyor)</span></label><label class="ol"><input type="radio" name="d2" value="0-5"><span class="ot" id="d2-2">0–5 yıl</span></label><label class="ol"><input type="radio" name="d2" value="6-10"><span class="ot" id="d2-3">6–10 yıl</span></label><label class="ol"><input type="radio" name="d2" value="11-15"><span class="ot" id="d2-4">11–15 yıl</span></label><label class="ol"><input type="radio" name="d2" value="15+"><span class="ot" id="d2-5">&gt;15 yıl</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">D3</span><span id="d3-q">Çalıştığınız kurumun tipi nedir?</span></p><div class="opts"><label class="ol"><input type="radio" name="d3" value="2b"><span class="ot" id="d3-1">Devlet / Özel hastane (2. basamak)</span></label><label class="ol"><input type="radio" name="d3" value="3b"><span class="ot" id="d3-2">Eğitim-araştırma / Üniversite / Vakıf hastanesi (3. basamak)</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">D4</span><span id="d4-q">Kurumunuzda aylık ortalama kaç açık kırık vakası görülmektedir?</span></p><div class="opts"><label class="ol"><input type="radio" name="d4" value="lt2"><span class="ot" id="d4-1">&lt;2 vaka</span></label><label class="ol"><input type="radio" name="d4" value="2-5"><span class="ot" id="d4-2">2–5 vaka</span></label><label class="ol"><input type="radio" name="d4" value="gt5"><span class="ot" id="d4-3">&gt;5 vaka</span></label><label class="ol"><input type="radio" name="d4" value="bilmiyorum"><span class="ot" id="d4-4">Bilmiyorum</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">D5</span><span id="d5-q">Kurumunuzda açık kırık için yazılı protokol var mı?</span></p><div class="opts"><label class="ol"><input type="radio" name="d5" value="evet"><span class="ot" id="d5-1">Evet, yazılı protokol var</span></label><label class="ol"><input type="radio" name="d5" value="rutin"><span class="ot" id="d5-2">Yazılı protokol yok ama yerleşik rutin uygulama mevcut</span></label><label class="ol"><input type="radio" name="d5" value="hayir"><span class="ot" id="d5-3">Hayır</span></label><label class="ol"><input type="radio" name="d5" value="bilmiyorum"><span class="ot" id="d5-4">Bilmiyorum</span></label></div></div>
 
-<div class="sec"><span class="sn">2</span><span id="s2">Antibiyotik Başlama Zamanlaması</span></div>
+<div class="step-nav">
+  
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="2"><div class="sec"><span class="sn">2</span><span id="s2">Antibiyotik Başlama Zamanlaması</span></div>
 <div class="qc"><p class="ql"><span class="qn">A1</span><span id="a1-q">Açık kırık hastalarında antibiyotik tedavisine ne zaman başlanmaktadır?</span></p><p class="qs" id="a1-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="a1" value="le1h"><span class="ot" id="a1-1">≤1 saat (yaralanma sonrası)</span></label><label class="ol"><input type="radio" name="a1" value="1-3h"><span class="ot" id="a1-2">1–3 saat içinde</span></label><label class="ol"><input type="radio" name="a1" value="3-6h"><span class="ot" id="a1-3">3–6 saat içinde</span></label><label class="ol"><input type="radio" name="a1" value="gt6h"><span class="ot" id="a1-4">>6 saat içinde</span></label><label class="ol"><input type="radio" name="a1" value="deb-sir"><span class="ot" id="a1-5">Debridman sırasında / sonrasında</span></label><label class="ol"><input type="radio" name="a1" value="bilmiyorum"><span class="ot" id="a1-6">Bilmiyorum</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">A2</span><span id="a2-q">Açık kırık hastalarında antibiyotiğin zamanında uygulanmasını hangi faktörler geciktirmektedir?</span></p><p class="qs" id="a2-sub">Çoklu seçim</p><div class="opts"><label class="ol"><input type="checkbox" name="a2" value="tani"><span class="ot" id="a2-1">Tanı gecikmesi</span></label><label class="ol"><input type="checkbox" name="a2" value="yogunluk"><span class="ot" id="a2-2">Acil serviste yoğunluk</span></label><label class="ol"><input type="checkbox" name="a2" value="ilac"><span class="ot" id="a2-3">İlaç temini sorunu</span></label><label class="ol"><input type="checkbox" name="a2" value="kons"><span class="ot" id="a2-4">Konsültasyon bekleme süresi</span></label><label class="ol"><input type="checkbox" name="a2" value="yok"><span class="ot" id="a2-5">Gecikme yaşanmıyor</span></label><label class="ol"><input type="checkbox" name="a2" value="diger" id="a2-dcb"><span class="ot" id="a2-6">Diğer</span></label><input type="text" class="oi" id="a2-dinp" placeholder="Lütfen belirtiniz…"></div></div>
 
-<div class="qc"><p class="ql"><span class="qn">A3</span><span id="a3-q">Kurumunuzda açık kırık hastasında ilk antibiyotik dozunu genellikle kim başlatır?</span></p><p class="qs" id="a3-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="a3" value="acil"><span class="ot" id="a3-1">Acil servis hekimi</span></label><label class="ol"><input type="radio" name="a3" value="ot"><span class="ot" id="a3-2">Ortopedi ve Travmatoloji</span></label><label class="ol"><input type="radio" name="a3" value="eh"><span class="ot" id="a3-3">Enfeksiyon Hastalıkları</span></label><label class="ol"><input type="radio" name="a3" value="hemsire"><span class="ot" id="a3-4">Hemşire (protokol/order set)</span></label><label class="ol"><input type="radio" name="a3" value="degisken"><span class="ot" id="a3-5">Değişken (vakaya göre)</span></label><label class="ol"><input type="radio" name="a3" value="bilmiyorum"><span class="ot" id="a3-6">Bilmiyorum</span></label></div></div><div class="sec"><span class="sn">3</span><span id="s3">Antibiyotik Seçimi</span></div>
+<div class="qc"><p class="ql"><span class="qn">A3</span><span id="a3-q">Kurumunuzda açık kırık hastasında ilk antibiyotik dozunu genellikle kim başlatır?</span></p><p class="qs" id="a3-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="a3" value="acil"><span class="ot" id="a3-1">Acil servis hekimi</span></label><label class="ol"><input type="radio" name="a3" value="ot"><span class="ot" id="a3-2">Ortopedi ve Travmatoloji</span></label><label class="ol"><input type="radio" name="a3" value="eh"><span class="ot" id="a3-3">Enfeksiyon Hastalıkları</span></label><label class="ol"><input type="radio" name="a3" value="hemsire"><span class="ot" id="a3-4">Hemşire (protokol/order set)</span></label><label class="ol"><input type="radio" name="a3" value="degisken"><span class="ot" id="a3-5">Değişken (vakaya göre)</span></label><label class="ol"><input type="radio" name="a3" value="bilmiyorum"><span class="ot" id="a3-6">Bilmiyorum</span></label></div></div><div class="step-nav">
+  <button type="button" class="step-btn btn-prev" onclick="goStep(-1)">Önceki</button>
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="3"><div class="sec"><span class="sn">3</span><span id="s3">Antibiyotik Seçimi</span></div>
 <div class="qc"><p class="ql"><span class="qn">B1</span><span id="b1-q">Gustilo tip I–II kırıkta birinci basamak antibiyotik ajan nedir?</span></p><p class="qs" id="b1-sub">Tek seçim</p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b1-ot">Uygulamanızda hangi ajan kullanılıyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b1-eh">Hangi ajan kullanılmalıdır?</span></div><div class="opts"><label class="ol"><input type="radio" name="b1" value="sefazolin"><span class="ot" id="b1-1">Sefazolin</span></label><label class="ol"><input type="radio" name="b1" value="amp-sul"><span class="ot" id="b1-2">Ampisilin-sulbaktam</span></label><label class="ol"><input type="radio" name="b1" value="seftriakson"><span class="ot" id="b1-3">Seftriakson</span></label><label class="ol"><input type="radio" name="b1" value="klindamisin"><span class="ot" id="b1-4">Klindamisin</span></label><label class="ol"><input type="radio" name="b1" value="diger"><span class="ot" id="b1-5">Diğer</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">B2</span><span id="b2-q">Gustilo tip IIIA–B kırıkta gram-negatif kapsam eklenmekte midir?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b2-ot">Uygulamanızda gram-negatif kapsam ekleniyor mu?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b2-eh">Gram-negatif kapsam eklenmeli midir?</span></div><div class="opts"><label class="ol"><input type="radio" name="b2" value="evet-rutin"><span class="ot" id="b2-1">Evet, rutin olarak</span></label><label class="ol"><input type="radio" name="b2" value="evet-sec"><span class="ot" id="b2-2">Evet, kontaminasyon durumuna göre</span></label><label class="ol"><input type="radio" name="b2" value="hayir"><span class="ot" id="b2-3">Hayır</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">B3</span><span id="b3-q">Tip III kırıkta gram-negatif kapsam için hangi ajan tercih edilmektedir?</span></p><p class="qs" id="b3-sub">Tek seçim</p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b3-ot">Uygulamanızda hangi ajan tercih ediliyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b3-eh">Hangi ajan tercih edilmelidir?</span></div><div class="opts"><label class="ol"><input type="radio" name="b3" value="aminoglikozid"><span class="ot" id="b3-1">Aminoglikozid (gentamisin vb.)</span></label><label class="ol"><input type="radio" name="b3" value="pip-taz"><span class="ot" id="b3-2">Piperasilin-tazobaktam</span></label><label class="ol"><input type="radio" name="b3" value="sipro"><span class="ot" id="b3-3">Siprofloksasin</span></label><label class="ol"><input type="radio" name="b3" value="ek-yok"><span class="ot" id="b3-4">Ek ajan gerekli değil</span></label><label class="ol"><input type="radio" name="b3" value="diger"><span class="ot" id="b3-5">Diğer</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">B4</span><span id="b4-q">Tarım/toprak kökenli yaralanmalarda Clostridium kapsamı için penisilin eklenmekte midir?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b4-ot">Uygulamanızda penisilin ekleniyor mu?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b4-eh">Penisilin eklenmeli midir?</span></div><div class="opts"><label class="ol"><input type="radio" name="b4" value="evet-rutin"><span class="ot" id="b4-1">Evet, rutin olarak</span></label><label class="ol"><input type="radio" name="b4" value="evet-duruma"><span class="ot" id="b4-2">Evet, duruma göre</span></label><label class="ol"><input type="radio" name="b4" value="hayir"><span class="ot" id="b4-3">Hayır</span></label></div></div>
-<div class="qc"><p class="ql"><span class="qn">B5</span><span id="b5-q">Ciddi beta-laktam alerjisi olan tip I-II açık kırık hastasında tercih edilen profilaksi nedir?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b5-ot">Uygulamanızda hangi ajan tercih ediliyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b5-eh">Hangi ajan önerilmelidir?</span></div><div class="opts"><label class="ol"><input type="radio" name="b5" value="klindamisin"><span class="ot" id="b5-1">Klindamisin</span></label><label class="ol"><input type="radio" name="b5" value="vankomisin"><span class="ot" id="b5-2">Vankomisin</span></label><label class="ol"><input type="radio" name="b5" value="kinolon"><span class="ot" id="b5-3">Florokinolon</span></label><label class="ol"><input type="radio" name="b5" value="eh-danis"><span class="ot" id="b5-4">Enfeksiyon Hastalıkları uzmanına danışırım</span></label><label class="ol"><input type="radio" name="b5" value="standart-yok"><span class="ot" id="b5-5">Kurumumda standart yok</span></label><label class="ol"><input type="radio" name="b5" value="diger"><span class="ot" id="b5-6">Diğer</span></label></div></div><div class="sec"><span class="sn">4</span><span id="s4">Profilaktik Antibiyotik Süresi</span></div>
+<div class="qc"><p class="ql"><span class="qn">B5</span><span id="b5-q">Ciddi beta-laktam alerjisi olan tip I-II açık kırık hastasında tercih edilen profilaksi nedir?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b5-ot">Uygulamanızda hangi ajan tercih ediliyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b5-eh">Hangi ajan önerilmelidir?</span></div><div class="opts"><label class="ol"><input type="radio" name="b5" value="klindamisin"><span class="ot" id="b5-1">Klindamisin</span></label><label class="ol"><input type="radio" name="b5" value="vankomisin"><span class="ot" id="b5-2">Vankomisin</span></label><label class="ol"><input type="radio" name="b5" value="kinolon"><span class="ot" id="b5-3">Florokinolon</span></label><label class="ol"><input type="radio" name="b5" value="eh-danis"><span class="ot" id="b5-4">Enfeksiyon Hastalıkları uzmanına danışırım</span></label><label class="ol"><input type="radio" name="b5" value="standart-yok"><span class="ot" id="b5-5">Kurumumda standart yok</span></label><label class="ol"><input type="radio" name="b5" value="diger"><span class="ot" id="b5-6">Diğer</span></label></div></div><div class="qc"><p class="ql"><span class="qn">B6a</span><span id="b6a-q">Açık kırıkta erişkin hastada standart/rutin sefazolin profilaksisi başlangıç IV dozu nedir?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b6a-ot">Uygulamanızda hangi doz tercih ediliyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b6a-eh">Hangi doz öneriniz var?</span></div><p class="qs" id="b6a-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="b6a" value="1g"><span class="ot" id="b6a-1">1 g IV</span></label><label class="ol"><input type="radio" name="b6a" value="2g"><span class="ot" id="b6a-2">2 g IV</span></label><label class="ol"><input type="radio" name="b6a" value="3g"><span class="ot" id="b6a-3">3 g IV</span></label><label class="ol"><input type="radio" name="b6a" value="protokol"><span class="ot" id="b6a-4">Kurumsal protokole göre değişir</span></label><label class="ol"><input type="radio" name="b6a" value="kullanmiyorum"><span class="ot" id="b6a-5">Sefazolin kullanmıyorum / önermiyorum</span></label><label class="ol"><input type="radio" name="b6a" value="fikrimyok"><span class="ot" id="b6a-6">Fikrim yok / rutin önerim yok</span></label></div></div><div class="qc qc-cond" id="b6b-block" style="display:none"><p class="ql"><span class="qn">B6b</span><span id="b6b-q">Hasta ağırlığı &gt;120 kg olduğunda bu standart dozunuzu artırır mısınız?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-b6b-ot">Uygulamanızda doz artırımı yapıyor musunuz?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-b6b-eh">Doz artırımı öneriyor musunuz?</span></div><p class="qs" id="b6b-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="b6b" value="ayni"><span class="ot" id="b6b-1">Hayır, aynı dozu kullanırım</span></label><label class="ol"><input type="radio" name="b6b" value="3g"><span class="ot" id="b6b-2">Evet, 3 g’a çıkarım</span></label><label class="ol"><input type="radio" name="b6b" value="diger" id="b6b-dcb"><span class="ot" id="b6b-3">Evet, başka doza çıkarım</span></label><input type="text" class="oi" id="b6b-dinp" placeholder="Lütfen belirtiniz…"><label class="ol"><input type="radio" name="b6b" value="duruma"><span class="ot" id="b6b-4">Duruma göre değişir</span></label><label class="ol"><input type="radio" name="b6b" value="bilmiyorum"><span class="ot" id="b6b-5">Bilmiyorum / fikrim yok</span></label></div></div><div class="step-nav">
+  <button type="button" class="step-btn btn-prev" onclick="goStep(-1)">Önceki</button>
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="4"><div class="sec"><span class="sn">4</span><span id="s4">Profilaktik Antibiyotik Süresi</span></div>
 <div class="qc"><p class="ql"><span class="qn">C1</span><span id="c1-q">Gustilo tip I–II kırıklarda profilaktik antibiyotik süresi ne kadardır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-c1-ot">Uygulamanızda kullanılan süre?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-c1-eh">Uygun gördüğünüz süre?</span></div><div class="opts"><label class="ol"><input type="radio" name="c1" value="le24"><span class="ot" id="c1-1">≤24 saat</span></label><label class="ol"><input type="radio" name="c1" value="24-48"><span class="ot" id="c1-2">24–48 saat</span></label><label class="ol"><input type="radio" name="c1" value="48-72"><span class="ot" id="c1-3">48–72 saat</span></label><label class="ol"><input type="radio" name="c1" value="gt72"><span class="ot" id="c1-4">&gt;72 saat</span></label><label class="ol"><input type="radio" name="c1" value="taburcu"><span class="ot" id="c1-5">Taburculuğa kadar</span></label><label class="ol"><input type="radio" name="c1" value="yara-24"><span class="ot" id="c1-6">Yara kapanmasından sonra 24 saate kadar</span></label><label class="ol"><input type="radio" name="c1" value="orto"><span class="ot" id="c1-7">Definitif yumuşak doku örtümüne kadar</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">C2</span><span id="c2-q">Gustilo tip III kırıklarda profilaktik antibiyotik süresi ne kadardır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-c2-ot">Uygulamanızda kullanılan süre?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-c2-eh">Uygun gördüğünüz süre?</span></div><div class="opts"><label class="ol"><input type="radio" name="c2" value="le24"><span class="ot" id="c2-1">≤24 saat</span></label><label class="ol"><input type="radio" name="c2" value="24-48"><span class="ot" id="c2-2">24–48 saat</span></label><label class="ol"><input type="radio" name="c2" value="48-72"><span class="ot" id="c2-3">48–72 saat</span></label><label class="ol"><input type="radio" name="c2" value="gt72"><span class="ot" id="c2-4">&gt;72 saat</span></label><label class="ol"><input type="radio" name="c2" value="taburcu"><span class="ot" id="c2-5">Taburculuğa kadar</span></label><label class="ol"><input type="radio" name="c2" value="yara-24"><span class="ot" id="c2-6">Yara kapanmasından sonra 24 saate kadar</span></label><label class="ol"><input type="radio" name="c2" value="orto"><span class="ot" id="c2-7">Definitif yumuşak doku örtümüne kadar</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">C3</span><span id="c3-q">Açık kırık hastalarında taburculuk sonrası oral antibiyotik verilmekte midir?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-c3-ot">Uygulamanızda veriliyor mu?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-c3-eh">Verilmeli midir?</span></div><div class="opts"><label class="ol"><input type="radio" name="c3" value="evet-rutin"><span class="ot" id="c3-1">Evet, tüm açık kırıklara rutin</span></label><label class="ol"><input type="radio" name="c3" value="evet-tip3"><span class="ot" id="c3-2">Evet, yalnızca tip III'te</span></label><label class="ol"><input type="radio" name="c3" value="hayir"><span class="ot" id="c3-3">Hayır</span></label></div></div>
-<div class="qc"><p class="ql"><span class="qn">C4</span><span id="c4-q">Açık kırık hastalarında antibiyotik tedavisini sonlandırma kararını ne belirler?</span></p><p class="qs" id="c4-sub">Çoklu seçim — uyguladığınız tüm kriterleri işaretleyin</p><div class="opts"><label class="ol"><input type="checkbox" name="c4" value="klavuz"><span class="ot" id="c4-1">Kılavuz önerisi (≤24–72 saat)</span></label><label class="ol"><input type="checkbox" name="c4" value="debridman"><span class="ot" id="c4-2">Debridmanın tamamlanması</span></label><label class="ol"><input type="checkbox" name="c4" value="yara"><span class="ot" id="c4-3">Yara kapanması</span></label><label class="ol"><input type="checkbox" name="c4" value="taburcu"><span class="ot" id="c4-4">Taburculuk</span></label><label class="ol"><input type="checkbox" name="c4" value="klinik"><span class="ot" id="c4-5">Klinik / laboratuvar bulguları (CRP, ateş, lökosit vb.)</span></label></div></div><div class="sec"><span class="sn">5</span><span id="s5">Debridman ve İrigasyon</span></div>
+<div class="qc"><p class="ql"><span class="qn">C4</span><span id="c4-q">Açık kırık hastalarında antibiyotik tedavisini sonlandırma kararını ne belirler?</span></p><p class="qs" id="c4-sub">Çoklu seçim — uyguladığınız tüm kriterleri işaretleyin</p><div class="opts"><label class="ol"><input type="checkbox" name="c4" value="klavuz"><span class="ot" id="c4-1">Kılavuz önerisi (≤24–72 saat)</span></label><label class="ol"><input type="checkbox" name="c4" value="debridman"><span class="ot" id="c4-2">Debridmanın tamamlanması</span></label><label class="ol"><input type="checkbox" name="c4" value="yara"><span class="ot" id="c4-3">Yara kapanması</span></label><label class="ol"><input type="checkbox" name="c4" value="taburcu"><span class="ot" id="c4-4">Taburculuk</span></label><label class="ol"><input type="checkbox" name="c4" value="klinik"><span class="ot" id="c4-5">Klinik / laboratuvar bulguları (CRP, ateş, lökosit vb.)</span></label></div></div><div class="step-nav">
+  <button type="button" class="step-btn btn-prev" onclick="goStep(-1)">Önceki</button>
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="5"><div class="sec"><span class="sn">5</span><span id="s5">Debridman ve İrigasyon</span></div>
 <div class="qc"><p class="ql"><span class="qn">E1</span><span id="e1-q">Düşük kontaminasyonlu (tip I–II) kırıklarda debridman kaç saat içinde yapılmaktadır?</span></p><div class="opts"><label class="ol"><input type="radio" name="e1" value="lt6"><span class="ot" id="e1-1">&lt;6 saat</span></label><label class="ol"><input type="radio" name="e1" value="6-12"><span class="ot" id="e1-2">6–12 saat</span></label><label class="ol"><input type="radio" name="e1" value="12-24"><span class="ot" id="e1-3">12–24 saat</span></label><label class="ol"><input type="radio" name="e1" value="gt24"><span class="ot" id="e1-4">&gt;24 saat</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">E2</span><span id="e2-q">Yüksek kontaminasyonlu (tip III) kırıklarda debridman kaç saat içinde yapılmaktadır?</span></p><div class="opts"><label class="ol"><input type="radio" name="e2" value="lt6"><span class="ot" id="e2-1">&lt;6 saat</span></label><label class="ol"><input type="radio" name="e2" value="6-12"><span class="ot" id="e2-2">6–12 saat</span></label><label class="ol"><input type="radio" name="e2" value="12-24"><span class="ot" id="e2-3">12–24 saat</span></label><label class="ol"><input type="radio" name="e2" value="gt24"><span class="ot" id="e2-4">&gt;24 saat</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">E3</span><span id="e3-q">Debridman ve kemik fiksasyonu ne zaman planlanmaktadır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-e3-ot">Uygulamanızda ne zaman yapılıyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-e3-eh">Ne zaman yapılmalıdır?</span></div><div class="opts"><label class="ol"><input type="radio" name="e3" value="derhal"><span class="ot" id="e3-1">Derhal — acil liste, ilk müsait ameliyathane</span></label><label class="ol"><input type="radio" name="e3" value="lt6"><span class="ot" id="e3-2">İlk 6 saat içinde</span></label><label class="ol"><input type="radio" name="e3" value="6-24"><span class="ot" id="e3-3">6–24 saat içinde (aynı gün elektif)</span></label><label class="ol"><input type="radio" name="e3" value="24-72"><span class="ot" id="e3-4">24–72 saat içinde (ertesi gün listesi)</span></label><label class="ol"><input type="radio" name="e3" value="gt72"><span class="ot" id="e3-5">&gt;72 saat (elektif planlama)</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">E4</span><span id="e4-q">İrigasyon için hangi solüsyon tercih edilmektedir?</span></p><p class="qs" id="e4-sub">Tek seçim</p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-e4-ot">Uygulamanızda ne kullanılıyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-e4-eh">Hangi solüsyon tercih edilmelidir?</span></div><div class="opts"><label class="ol"><input type="radio" name="e4" value="sf"><span class="ot" id="e4-1">Serum fizyolojik</span></label><label class="ol"><input type="radio" name="e4" value="povidon"><span class="ot" id="e4-2">Povidon-iyodürlü solüsyon</span></label><label class="ol"><input type="radio" name="e4" value="dakin"><span class="ot" id="e4-3">Dakin solüsyonu</span></label><label class="ol"><input type="radio" name="e4" value="ab-katki"><span class="ot" id="e4-4">Antibiyotik eklenmiş solüsyon</span></label><label class="ol"><input type="radio" name="e4" value="diger" id="e4-drb"><span class="ot" id="e4-5">Diğer</span></label><input type="text" class="oi" id="e4-dinp" placeholder="Lütfen belirtiniz…"></div></div>
 <div class="qc"><p class="ql"><span class="qn">E5</span><span id="e5-q">Açık kırık debridmanı sırasında kültür örneği alınmakta mıdır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-e5-ot">Uygulamanızda alınıyor mu?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-e5-eh">Alınmalı mıdır?</span></div><div class="opts"><label class="ol"><input type="radio" name="e5" value="evet-rutin"><span class="ot" id="e5-1">Evet, rutin olarak</span></label><label class="ol"><input type="radio" name="e5" value="evet-sec"><span class="ot" id="e5-2">Evet, seçici koşullarda</span></label><label class="ol"><input type="radio" name="e5" value="hayir"><span class="ot" id="e5-3">Hayır</span></label></div></div>
 
-<div class="qc"><p class="ql"><span class="qn">E6</span><span id="e6-q">İrigasyon hangi yöntemle uygulanmaktadır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-e6-ot">Uygulamanızda nasıl yapılıyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-e6-eh">Enfeksiyon önleme açısından hangi yöntem uygun bulunmaktadır?</span></div><p class="qs" id="e6-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="e6" value="yercekimi"><span class="ot" id="e6-1">Yerçekimi / düşük basınç (gravity flow)</span></label><label class="ol"><input type="radio" name="e6" value="dusuk-pulsatil"><span class="ot" id="e6-2">Düşük basınçlı pulsatil lavaj</span></label><label class="ol"><input type="radio" name="e6" value="yuksek-pulsatil"><span class="ot" id="e6-3">Yüksek basınçlı pulsatil lavaj</span></label><label class="ol"><input type="radio" name="e6" value="manuel"><span class="ot" id="e6-4">Manuel sıkma şişesi / enjektör</span></label><label class="ol"><input type="radio" name="e6" value="standart-yok"><span class="ot" id="e6-5">Standart yöntem yok / değişken</span></label><label class="ol"><input type="radio" name="e6" value="bilmiyorum"><span class="ot" id="e6-6">Bilmiyorum</span></label></div></div><div class="sec"><span class="sn">6</span><span id="s6">Yerel Antibiyotik ve Konsültasyon</span></div>
+<div class="qc"><p class="ql"><span class="qn">E6</span><span id="e6-q">İrigasyon hangi yöntemle uygulanmaktadır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-e6-ot">Uygulamanızda nasıl yapılıyor?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-e6-eh">Enfeksiyon önleme açısından hangi yöntem uygun bulunmaktadır?</span></div><p class="qs" id="e6-sub">Tek seçim</p><div class="opts"><label class="ol"><input type="radio" name="e6" value="yercekimi"><span class="ot" id="e6-1">Yerçekimi / düşük basınç (gravity flow)</span></label><label class="ol"><input type="radio" name="e6" value="dusuk-pulsatil"><span class="ot" id="e6-2">Düşük basınçlı pulsatil lavaj</span></label><label class="ol"><input type="radio" name="e6" value="yuksek-pulsatil"><span class="ot" id="e6-3">Yüksek basınçlı pulsatil lavaj</span></label><label class="ol"><input type="radio" name="e6" value="manuel"><span class="ot" id="e6-4">Manuel sıkma şişesi / enjektör</span></label><label class="ol"><input type="radio" name="e6" value="standart-yok"><span class="ot" id="e6-5">Standart yöntem yok / değişken</span></label><label class="ol"><input type="radio" name="e6" value="bilmiyorum"><span class="ot" id="e6-6">Bilmiyorum</span></label></div></div><div class="step-nav">
+  <button type="button" class="step-btn btn-prev" onclick="goStep(-1)">Önceki</button>
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="6"><div class="sec"><span class="sn">6</span><span id="s6">Yerel Antibiyotik ve Konsültasyon</span></div>
 <div class="qc"><p class="ql"><span class="qn">F1</span><span id="f1-q">Açık kırık hastalarında lokal antibiyotik ajan (bead, sprey, sünger) kullanılmakta mıdır?</span></p><div class="bn ot"><span class="bd">Ortopedi</span><span id="bn-f1-ot">Uygulamanızda lokal antibiyotik ajan kullanılıyor mu?</span></div><div class="bn eh"><span class="bd">Enfeksiyon</span><span id="bn-f1-eh">Lokal antibiyotik ajan kullanılmalı mıdır?</span></div><div class="opts"><label class="ol"><input type="radio" name="f1" value="evet-rutin"><span class="ot" id="f1-1">Evet, rutin olarak</span></label><label class="ol"><input type="radio" name="f1" value="evet-tip3"><span class="ot" id="f1-2">Evet, yalnızca tip III kırıklarda</span></label><label class="ol"><input type="radio" name="f1" value="hayir"><span class="ot" id="f1-3">Hayır</span></label><label class="ol"><input type="radio" name="f1" value="mevcut-degil"><span class="ot" id="f1-4">Kurumumda mevcut değil, ancak kullanmak isterdim</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">F2</span><span id="f2-q">Açık kırık hastalarında Enfeksiyon Hastalıkları konsültasyonu ne zaman istenmelidir?</span></p><div class="opts"><label class="ol"><input type="radio" name="f2" value="her-vakada"><span class="ot" id="f2-1">Her vakada rutin olarak</span></label><label class="ol"><input type="radio" name="f2" value="tip3"><span class="ot" id="f2-2">Yalnızca tip III kırıklarda</span></label><label class="ol"><input type="radio" name="f2" value="komplikasyon"><span class="ot" id="f2-3">Yalnızca komplikasyon / enfeksiyon şüphesinde</span></label><label class="ol"><input type="radio" name="f2" value="gerekli-degil"><span class="ot" id="f2-4">Konsültasyon gerekli değil</span></label></div></div>
 <div class="qc"><p class="ql"><span class="qn">F3</span><span id="f3-q">Açık kırık hastalarında Enfeksiyon Hastalıkları konsültasyonunun profilaksi kararınızı değiştirme sıklığını nasıl değerlendirirsiniz?</span></p><div class="lk"><div class="lko"><input type="radio" name="f3" value="1" id="f3-1"><label for="f3-1"><span class="lkn">1</span><span class="lkd" id="f3-d1">Hiç değiştirmez</span></label></div><div class="lko"><input type="radio" name="f3" value="2" id="f3-2"><label for="f3-2"><span class="lkn">2</span><span class="lkd" id="f3-d2">Nadiren</span></label></div><div class="lko"><input type="radio" name="f3" value="3" id="f3-3"><label for="f3-3"><span class="lkn">3</span><span class="lkd" id="f3-d3">Bazen</span></label></div><div class="lko"><input type="radio" name="f3" value="4" id="f3-4"><label for="f3-4"><span class="lkn">4</span><span class="lkd" id="f3-d4">Çoğunlukla</span></label></div><div class="lko"><input type="radio" name="f3" value="5" id="f3-5"><label for="f3-5"><span class="lkn">5</span><span class="lkd" id="f3-d5">Çok sık değiştirir</span></label></div></div></div>
 <div class="qc"><p class="ql"><span class="qn">F4</span><span id="f4-q">Kurumunuzda açık kırık profilaksisi için Ortopedi-Travmatoloji ile Enfeksiyon Hastalıkları arasında ortak protokol mevcut mudur?</span></p><div class="opts"><label class="ol"><input type="radio" name="f4" value="evet"><span class="ot" id="f4-1">Evet</span></label><label class="ol"><input type="radio" name="f4" value="hayir-olmali"><span class="ot" id="f4-2">Hayır, ama olmalı</span></label><label class="ol"><input type="radio" name="f4" value="hayir-gerek-yok"><span class="ot" id="f4-3">Hayır, gerekli değil</span></label><label class="ol"><input type="radio" name="f4" value="bilmiyorum"><span class="ot" id="f4-4">Bilmiyorum</span></label></div></div>
 
-<div class="sec"><span class="sn">7</span><span id="s7">Kılavuz Farkındalığı</span></div>
-<div class="qc"><p class="ql"><span class="qn">G1</span><span id="g1-q">Aşağıdaki açık kırık / travma antibiyotik profilaksisi kılavuz veya rehberlerinden hangilerini biliyor veya takip ediyorsunuz?</span></p><p class="qs" id="g1-sub">Çoklu seçim</p><div class="opts"><label class="ol"><input type="checkbox" name="g1" value="boast"><span class="ot" id="g1-1">BOAST-4 / BOA–BAPRAS Open Fracture Guideline <strong>(2017)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="nice"><span class="ot" id="g1-2">NICE NG37 – Complex Fractures <strong>(2016)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="east"><span class="ot" id="g1-3">EAST – Practice Management Guideline for Open Fractures <strong>(2020)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="aaos"><span class="ot" id="g1-4">AAOS – Prevention of SSI After Major Extremity Trauma CPG <strong>(2022)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="sis"><span class="ot" id="g1-5">SIS – Open Extremity Fracture Antibiotic Guideline <strong>(2022)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="aast"><span class="ot" id="g1-6">AAST – Antibiotic Prophylaxis in Injury Clinical Consensus <strong>(2024)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="hicbiri"><span class="ot" id="g1-7">Hiçbirini bilmiyorum</span></label></div></div><div class="qc"><p class="ql"><span class="qn">G2</span><span id="g2-q">Açık kırık profilaksisinde kendi yaklaşımınızın uluslararası kılavuzlarla uyum düzeyini nasıl değerlendirirsiniz?</span></p><div class="lk"><div class="lko"><input type="radio" name="g2" value="1" id="g2-1"><label for="g2-1"><span class="lkn">1</span><span class="lkd" id="g2-d1">Hiç uyumlu değil</span></label></div><div class="lko"><input type="radio" name="g2" value="2" id="g2-2"><label for="g2-2"><span class="lkn">2</span><span class="lkd" id="g2-d2">Az uyumlu</span></label></div><div class="lko"><input type="radio" name="g2" value="3" id="g2-3"><label for="g2-3"><span class="lkn">3</span><span class="lkd" id="g2-d3">Kısmen uyumlu</span></label></div><div class="lko"><input type="radio" name="g2" value="4" id="g2-4"><label for="g2-4"><span class="lkn">4</span><span class="lkd" id="g2-d4">Büyük ölçüde</span></label></div><div class="lko"><input type="radio" name="g2" value="5" id="g2-5"><label for="g2-5"><span class="lkn">5</span><span class="lkd" id="g2-d5">Tam uyumlu</span></label></div></div><div class="opts" style="margin-top:8px"><label class="ol"><input type="radio" name="g2" value="fikrimyok"><span class="ot" id="g2-fy">Fikrim yok</span></label></div></div><div class="qc"><p class="ql"><span class="qn">G3</span><span id="g3-q">Mevcut literatür açık kırık profilaksisi konusunda yeterli rehberlik sağlıyor mu?</span></p><div class="lk"><div class="lko"><input type="radio" name="g3" value="1" id="g3-1"><label for="g3-1"><span class="lkn">1</span><span class="lkd" id="g3-d1">Tam yetersiz</span></label></div><div class="lko"><input type="radio" name="g3" value="2" id="g3-2"><label for="g3-2"><span class="lkn">2</span><span class="lkd" id="g3-d2">Yetersiz</span></label></div><div class="lko"><input type="radio" name="g3" value="3" id="g3-3"><label for="g3-3"><span class="lkn">3</span><span class="lkd" id="g3-d3">Kısmen</span></label></div><div class="lko"><input type="radio" name="g3" value="4" id="g3-4"><label for="g3-4"><span class="lkn">4</span><span class="lkd" id="g3-d4">Yeterli</span></label></div><div class="lko"><input type="radio" name="g3" value="5" id="g3-5"><label for="g3-5"><span class="lkn">5</span><span class="lkd" id="g3-d5">Tam yeterli</span></label></div></div><div class="opts" style="margin-top:8px"><label class="ol"><input type="radio" name="g3" value="fikrimyok"><span class="ot" id="g3-fy">Fikrim yok</span></label></div></div><div class="qc"><p class="ql"><span class="qn">H1</span><span id="h1-q">Açık kırıkta kırık ile ilişkili enfeksiyonun önlenmesinde en önemli 3 faktör nedir?</span></p><p class="qs" id="h1-sub">En fazla 3 seçim</p><div class="opts"><label class="ol"><input type="checkbox" name="h1" value="zamanlama"><span class="ot" id="h1-1">Antibiyotik zamanlaması</span></label><label class="ol"><input type="checkbox" name="h1" value="secim"><span class="ot" id="h1-2">Antibiyotik seçimi</span></label><label class="ol"><input type="checkbox" name="h1" value="sure"><span class="ot" id="h1-3">Profilaksi süresi</span></label><label class="ol"><input type="checkbox" name="h1" value="debridman"><span class="ot" id="h1-4">Debridman kalitesi / süresi</span></label><label class="ol"><input type="checkbox" name="h1" value="irigasyon"><span class="ot" id="h1-5">İrigasyon solüsyonu seçimi</span></label><label class="ol"><input type="checkbox" name="h1" value="yerel-ab"><span class="ot" id="h1-6">Yerel antibiyotik kullanımı</span></label><label class="ol"><input type="checkbox" name="h1" value="konsultasyon"><span class="ot" id="h1-7">Enfeksiyon Hastalıkları konsültasyonu</span></label></div></div>
+<div class="step-nav">
+  <button type="button" class="step-btn btn-prev" onclick="goStep(-1)">Önceki</button>
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="7"><div class="sec"><span class="sn">7</span><span id="s7">Kılavuz Farkındalığı</span></div>
+<div class="qc"><p class="ql"><span class="qn">G1</span><span id="g1-q">Aşağıdaki açık kırık / travma antibiyotik profilaksisi kılavuz veya rehberlerinden hangilerini biliyor veya takip ediyorsunuz?</span></p><p class="qs" id="g1-sub">Çoklu seçim</p><div class="opts"><label class="ol"><input type="checkbox" name="g1" value="boast"><span class="ot" id="g1-1">BOAST-4 / BOA–BAPRAS Open Fracture Guideline <strong>(2017)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="nice"><span class="ot" id="g1-2">NICE NG37 – Complex Fractures <strong>(2016)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="east"><span class="ot" id="g1-3">EAST – Practice Management Guideline for Open Fractures <strong>(2020)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="aaos"><span class="ot" id="g1-4">AAOS – Prevention of SSI After Major Extremity Trauma CPG <strong>(2022)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="sis"><span class="ot" id="g1-5">SIS – Open Extremity Fracture Antibiotic Guideline <strong>(2022)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="aast"><span class="ot" id="g1-6">AAST – Antibiotic Prophylaxis in Injury Clinical Consensus <strong>(2024)</strong></span></label><label class="ol"><input type="checkbox" name="g1" value="hicbiri" id="g1-hcb"><span class="ot" id="g1-7">Hiçbirini bilmiyorum</span></label></div></div><div class="qc"><p class="ql"><span class="qn">G2</span><span id="g2-q">Açık kırık profilaksisinde kendi yaklaşımınızın uluslararası kılavuzlarla uyum düzeyini nasıl değerlendirirsiniz?</span></p><div class="lk"><div class="lko"><input type="radio" name="g2" value="1" id="g2-1"><label for="g2-1"><span class="lkn">1</span><span class="lkd" id="g2-d1">Hiç uyumlu değil</span></label></div><div class="lko"><input type="radio" name="g2" value="2" id="g2-2"><label for="g2-2"><span class="lkn">2</span><span class="lkd" id="g2-d2">Az uyumlu</span></label></div><div class="lko"><input type="radio" name="g2" value="3" id="g2-3"><label for="g2-3"><span class="lkn">3</span><span class="lkd" id="g2-d3">Kısmen uyumlu</span></label></div><div class="lko"><input type="radio" name="g2" value="4" id="g2-4"><label for="g2-4"><span class="lkn">4</span><span class="lkd" id="g2-d4">Büyük ölçüde</span></label></div><div class="lko"><input type="radio" name="g2" value="5" id="g2-5"><label for="g2-5"><span class="lkn">5</span><span class="lkd" id="g2-d5">Tam uyumlu</span></label></div></div><div class="opts" style="margin-top:8px"><label class="ol"><input type="radio" name="g2" value="fikrimyok"><span class="ot" id="g2-fy">Fikrim yok</span></label></div></div><div class="qc"><p class="ql"><span class="qn">G3</span><span id="g3-q">Mevcut literatür açık kırık profilaksisi konusunda yeterli rehberlik sağlıyor mu?</span></p><div class="lk"><div class="lko"><input type="radio" name="g3" value="1" id="g3-1"><label for="g3-1"><span class="lkn">1</span><span class="lkd" id="g3-d1">Tam yetersiz</span></label></div><div class="lko"><input type="radio" name="g3" value="2" id="g3-2"><label for="g3-2"><span class="lkn">2</span><span class="lkd" id="g3-d2">Yetersiz</span></label></div><div class="lko"><input type="radio" name="g3" value="3" id="g3-3"><label for="g3-3"><span class="lkn">3</span><span class="lkd" id="g3-d3">Kısmen</span></label></div><div class="lko"><input type="radio" name="g3" value="4" id="g3-4"><label for="g3-4"><span class="lkn">4</span><span class="lkd" id="g3-d4">Yeterli</span></label></div><div class="lko"><input type="radio" name="g3" value="5" id="g3-5"><label for="g3-5"><span class="lkn">5</span><span class="lkd" id="g3-d5">Tam yeterli</span></label></div></div><div class="opts" style="margin-top:8px"><label class="ol"><input type="radio" name="g3" value="fikrimyok"><span class="ot" id="g3-fy">Fikrim yok</span></label></div></div><div class="step-nav">
+  <button type="button" class="step-btn btn-prev" onclick="goStep(-1)">Önceki</button>
+  <button type="button" class="step-btn btn-next" onclick="goStep(1)">Sonraki</button>
+</div></div><div class="step" data-step="8"><div class="sec"><span class="sn">8</span><span id="s8">KİE Önleme Öncelikleri</span></div><div class="qc"><p class="ql"><span class="qn">H1</span><span id="h1-q">Açık kırıkta kırık ile ilişkili enfeksiyonun önlenmesinde en önemli 3 faktör nedir?</span></p><p class="qs" id="h1-sub">En fazla 3 seçim</p><div class="opts"><label class="ol"><input type="checkbox" name="h1" value="zamanlama"><span class="ot" id="h1-1">Antibiyotik zamanlaması</span></label><label class="ol"><input type="checkbox" name="h1" value="secim"><span class="ot" id="h1-2">Antibiyotik seçimi</span></label><label class="ol"><input type="checkbox" name="h1" value="sure"><span class="ot" id="h1-3">Profilaksi süresi</span></label><label class="ol"><input type="checkbox" name="h1" value="debridman"><span class="ot" id="h1-4">Debridman kalitesi / süresi</span></label><label class="ol"><input type="checkbox" name="h1" value="irigasyon"><span class="ot" id="h1-5">İrigasyon solüsyonu seçimi</span></label><label class="ol"><input type="checkbox" name="h1" value="yerel-ab"><span class="ot" id="h1-6">Yerel antibiyotik kullanımı</span></label><label class="ol"><input type="checkbox" name="h1" value="konsultasyon"><span class="ot" id="h1-7">Enfeksiyon Hastalıkları konsültasyonu</span></label></div></div>
 
+</div><div class="step-nav step-nav-final">
+  <button type="button" class="step-btn btn-prev" id="btn-prev-final" onclick="goStep(-1)">Önceki</button>
+</div>
 <div class="save-wrap">
   <button class="save-btn" id="save-btn" onclick="submitSurvey()"><span id="save-btn-t">Yanıtları Gönder</span></button>
   <div class="save-note" id="save-note">Yanıtlarınız güvenli sunucuya kaydedilir. Anonim ve gönüllülük esasına dayanır.</div>
@@ -204,6 +267,7 @@ const SB_URL='https://dohxshaniqgmxjdchhjd.supabase.co',SB_KEY='sb_publishable_Y
 var lang='tr';
 function setLang(l){
   lang=l;
+  document.documentElement.lang=l;
   document.getElementById('btn-tr').classList.toggle('on',l==='tr');
   document.getElementById('btn-en').classList.toggle('on',l==='en');
   var T={
@@ -214,7 +278,7 @@ function setLang(l){
     't-c1':{tr:'Bu anket; Girne Üniversitesi Klinik Araştırmalar Etik Kurulu onaylı, sorumlu araştırmacısı <strong>Yrd. Doç. Dr. Utku GÜRHAN</strong> olan çalışma bünyesinde hazırlanmıştır.',en:'This survey has been prepared within a study approved by Kyrenia University Clinical Research Ethics Committee, with <strong>Asst. Prof. Dr. Utku GÜRHAN</strong> as the principal investigator.'},
     't-c2':{tr:'Amaç: açık kırık antibiyotik profilaksisine yaklaşımda OT ile EH uzmanları arasındaki pratik farklılıkları ve kılavuz farkındalığını belirlemek.',en:'Aim: to assess practice variations and guideline awareness in open fracture antibiotic prophylaxis.'},
     't-c3':{tr:'Anket tamamen anonimdir. Katılım gönüllülük esasına dayanır.',en:'The survey is completely anonymous. Participation is voluntary.'},
-    't-rn':{tr:'<strong>Not:</strong> Bazı sorularda <strong style="color:var(--og)">(OT için)</strong> ve <strong style="color:var(--eb)">(EH için)</strong> yönlendirmeler vardır. <strong>D1\u2019de dalınızı seçince sorular otomatik güncellenir.</strong>',en:'<strong>Note:</strong> Some questions have <strong style="color:var(--og)">(For OT)</strong> and <strong style="color:var(--eb)">(For ID)</strong> instructions. <strong>Selecting your specialty in D1 updates the questions automatically.</strong>'},
+    't-rn':{tr:'<strong>Not:</strong> Bazı sorularda <strong style="color:var(--og)">(OT için)</strong> ve <strong style="color:var(--eb)">(EH için)</strong> yönlendirmeler vardır. <strong>D1\u2019de dalınızı seçince sorular otomatik güncellenir.</strong>',en:'<strong>Note:</strong> Some questions have <strong style="color:var(--og)">(For OT)</strong> and <strong style="color:var(--eb)">(For ID)</strong> instructions. <strong>Selecting your specialty in D1 automatically updates the questions.</strong>'},
     't-g':{tr:'Gustilo-Anderson Açık Kırık Sınıflaması — Hatırlatma',en:'Gustilo-Anderson Open Fracture Classification — Reminder'},
     's1':{tr:'Demografik Bilgiler',en:'Demographics'},
     's2':{tr:'Antibiyotik Başlama Zamanlaması',en:'Antibiotic Timing'},
@@ -223,17 +287,262 @@ function setLang(l){
     's5':{tr:'Debridman ve İrigasyon',en:'Debridement & Irrigation'},
     's6':{tr:'Yerel Antibiyotik ve Konsültasyon',en:'Local Antibiotics & Consultation'},
     's7':{tr:'Kılavuz Farkındalığı',en:'Guideline Awareness'},
-    's8':{tr:'Enfeksiyon Önleme Öncelikleri',en:'Infection Prevention Priorities'},
+    's8':{tr:'KİE Önleme Öncelikleri',en:'FRI Prevention Priorities'},
     'save-btn-t':{tr:'Yanıtları Gönder',en:'Submit Responses'},
     'save-note':{tr:'Yanıtlarınız güvenli sunucuya kaydedilir. Anonim ve gönüllülük esasına dayanır.',en:'Your responses are saved securely. Anonymous and voluntary.'},
     'save-ok':{tr:'✓ Yanıtlarınız başarıyla kaydedildi! Katılımınız için teşekkür ederiz.',en:'✓ Your responses have been saved successfully! Thank you for participating.'},
     'foot-h':{tr:'Katılımınız için teşekkür ederiz.',en:'Thank you for your participation.'},
-    'foot-p':{tr:'Yrd. Doç. Dr. Utku GÜRHAN — Ortopedi ve Travmatoloji<br>Dr. Suat Günsel Girne Üniversitesi Hastanesi, Girne, KKTC<br><a href="mailto:utku.gurhan@kyrenia.edu.tr">utku.gurhan@kyrenia.edu.tr</a>',en:'Asst. Prof. Dr. Utku GÜRHAN — Orthopaedics & Traumatology<br>Dr. Suat Günsel Kyrenia University Hospital, Kyrenia, TRNC<br><a href="mailto:utku.gurhan@kyrenia.edu.tr">utku.gurhan@kyrenia.edu.tr</a>'}
+    'foot-p':{tr:'Yrd. Doç. Dr. Utku GÜRHAN — Ortopedi ve Travmatoloji<br>Dr. Suat Günsel Girne Üniversitesi Hastanesi, Girne, KKTC<br><a href="mailto:utku.gurhan@kyrenia.edu.tr">utku.gurhan@kyrenia.edu.tr</a>',en:'Asst. Prof. Dr. Utku GÜRHAN — Orthopedics & Traumatology<br>Dr. Suat Günsel, Kyrenia University Hospital, Kyrenia, TRNC<br><a href="mailto:utku.gurhan@kyrenia.edu.tr">utku.gurhan@kyrenia.edu.tr</a>'},
+    'd1-q':{tr:'Uzmanlık dalınız nedir?',en:'What is your medical specialty?'},
+    'd2-q':{tr:'Uzmanlık sonrası deneyim süreniz ne kadardır?',en:'How many years of clinical experience post-residency?'},
+    'd3-q':{tr:'Çalıştığınız kurumun tipi nedir?',en:'What is your institution type?'},
+    'd4-q':{tr:'Kurumunuzda aylık ortalama kaç açık kırık vakası görülmektedir?',en:'Average monthly open fracture cases at your institution?'},
+    'd5-q':{tr:'Kurumunuzda açık kırık için yazılı protokol var mı?',en:'Does your institution have a protocol for open fractures?'},
+    'a1-q':{tr:'Açık kırık hastalarında antibiyotik tedavisine ne zaman başlanmaktadır?',en:'When are antibiotics started for open fractures?'},
+    'a2-q':{tr:'Açık kırık hastalarında antibiyotiğin zamanında uygulanmasını hangi faktörler geciktirmektedir?',en:'Which factors most commonly delay timely antibiotic administration in open fracture patients?'},
+    'a3-q':{tr:'Kurumunuzda açık kırık hastasında ilk antibiyotik dozunu genellikle kim başlatır?',en:'At your institution, who typically initiates the first antibiotic dose for open fracture patients?'},
+    'b1-q':{tr:'Gustilo tip I–II kırıkta birinci basamak antibiyotik ajan nedir?',en:'What is the first-line antibiotic agent for Gustilo type I-II open fractures?'},
+    'b2-q':{tr:'Gustilo tip IIIA–B kırıkta gram-negatif kapsam eklenmekte midir?',en:'Is gram-negative coverage added for Gustilo type IIIA-B open fractures?'},
+    'b3-q':{tr:'Tip III kırıkta gram-negatif kapsam için hangi ajan tercih edilmektedir?',en:'Which agent is preferred for gram-negative coverage in type III open fractures?'},
+    'b4-q':{tr:'Tarım/toprak kökenli yaralanmalarda Clostridium kapsamı için penisilin eklenmekte midir?',en:'Is penicillin added for Clostridium coverage in agricultural/soil-contaminated injuries?'},
+    'b5-q':{tr:'Ciddi beta-laktam alerjisi olan tip I-II açık kırık hastasında tercih edilen profilaksi nedir?',en:'What is the preferred prophylaxis for type I-II open fracture patients with severe beta-lactam allergy?'},
+    'b6a-q':{tr:'Açık kırıkta erişkin hastada standart/rutin sefazolin profilaksisi başlangıç IV dozu nedir?',en:'What is the standard/routine starting IV cefazolin prophylaxis dose in adult open fracture patients?'},
+    'b6b-q':{tr:'Hasta ağırlığı &gt;120 kg olduğunda bu standart dozunuzu artırır mısınız?',en:'Do you increase your standard dose when the patient\'s body weight is &gt;120 kg?'},
+    'c1-q':{tr:'Gustilo tip I–II kırıklarda profilaktik antibiyotik süresi ne kadardır?',en:'What is the duration of prophylactic antibiotics in Gustilo type I-II open fractures?'},
+    'c2-q':{tr:'Gustilo tip III kırıklarda profilaktik antibiyotik süresi ne kadardır?',en:'What is the duration of prophylactic antibiotics in Gustilo type III open fractures?'},
+    'c3-q':{tr:'Açık kırık hastalarında taburculuk sonrası oral antibiyotik verilmekte midir?',en:'Are oral antibiotics prescribed at discharge for open fracture patients?'},
+    'c4-q':{tr:'Açık kırık hastalarında antibiyotik tedavisini sonlandırma kararını ne belirler?',en:'What determines the decision to discontinue antibiotic therapy in open fracture patients?'},
+    'e1-q':{tr:'Düşük kontaminasyonlu (tip I–II) kırıklarda debridman kaç saat içinde yapılmaktadır?',en:'Within how many hours is debridement performed in low-contamination (type I-II) open fractures?'},
+    'e2-q':{tr:'Yüksek kontaminasyonlu (tip III) kırıklarda debridman kaç saat içinde yapılmaktadır?',en:'Within how many hours is debridement performed in high-contamination (type III) open fractures?'},
+    'e3-q':{tr:'Debridman ve kemik fiksasyonu ne zaman planlanmaktadır?',en:'When are debridement and bone fixation planned?'},
+    'e4-q':{tr:'İrigasyon için hangi solüsyon tercih edilmektedir?',en:'Which solution is preferred for irrigation?'},
+    'e5-q':{tr:'Açık kırık debridmanı sırasında kültür örneği alınmakta mıdır?',en:'Are culture samples obtained during open fracture debridement?'},
+    'e6-q':{tr:'İrigasyon hangi yöntemle uygulanmaktadır?',en:'What method is used for irrigation?'},
+    'f1-q':{tr:'Açık kırık hastalarında lokal antibiyotik ajan (bead, sprey, sünger) kullanılmakta mıdır?',en:'Are local antibiotic agents (beads, sponges, sprays) used in open fracture patients?'},
+    'f2-q':{tr:'Açık kırık hastalarında Enfeksiyon Hastalıkları konsültasyonu ne zaman istenmelidir?',en:'When should an Infectious Diseases consultation be requested for open fracture patients?'},
+    'f3-q':{tr:'Açık kırık hastalarında Enfeksiyon Hastalıkları konsültasyonunun profilaksi kararınızı değiştirme sıklığını nasıl değerlendirirsiniz?',en:'How would you rate the frequency at which an Infectious Diseases consultation changes your prophylaxis decision in open fracture patients?'},
+    'f4-q':{tr:'Kurumunuzda açık kırık profilaksisi için Ortopedi-Travmatoloji ile Enfeksiyon Hastalıkları arasında ortak protokol mevcut mudur?',en:'Does your institution have a joint protocol between Orthopaedics-Traumatology and Infectious Diseases for open fracture prophylaxis?'},
+    'g1-q':{tr:'Aşağıdaki açık kırık / travma antibiyotik profilaksisi kılavuz veya rehberlerinden hangilerini biliyor veya takip ediyorsunuz?',en:'Which of the following open fracture / trauma antibiotic prophylaxis guidelines or recommendations are you familiar with or follow?'},
+    'g2-q':{tr:'Açık kırık profilaksisinde kendi yaklaşımınızın uluslararası kılavuzlarla uyum düzeyini nasıl değerlendirirsiniz?',en:'How would you rate the level of agreement between your own approach and international guidelines in open fracture prophylaxis?'},
+    'g3-q':{tr:'Mevcut literatür açık kırık profilaksisi konusunda yeterli rehberlik sağlıyor mu?',en:'Does the existing literature provide sufficient guidance on open fracture prophylaxis?'},
+    'h1-q':{tr:'Açık kırıkta kırık ile ilişkili enfeksiyonun önlenmesinde en önemli 3 faktör nedir?',en:'What are the three most important factors in preventing fracture-related infection (FRI) in open fractures?'},
+    'a1-sub':{tr:'Tek seçim',en:'Single choice'},
+    'a2-sub':{tr:'Çoklu seçim',en:'Multiple choice'},
+    'a3-sub':{tr:'Tek seçim',en:'Single choice'},
+    'b1-sub':{tr:'Tek seçim',en:'Single choice'},
+    'b3-sub':{tr:'Tek seçim',en:'Single choice'},
+    'b6a-sub':{tr:'Tek seçim',en:'Single choice'},
+    'b6b-sub':{tr:'Tek seçim',en:'Single choice'},
+    'c4-sub':{tr:'Çoklu seçim — uyguladığınız tüm kriterleri işaretleyin',en:'Multiple choice — select all criteria you apply'},
+    'e4-sub':{tr:'Tek seçim',en:'Single choice'},
+    'e6-sub':{tr:'Tek seçim',en:'Single choice'},
+    'g1-sub':{tr:'Çoklu seçim',en:'Multiple choice'},
+    'h1-sub':{tr:'En fazla 3 seçim',en:'Up to 3 selections'},
+    'bn-b1-ot':{tr:'Uygulamanızda hangi ajan kullanılıyor?',en:'Which agent do you use in your practice?'},
+    'bn-b1-eh':{tr:'Hangi ajan kullanılmalıdır?',en:'Which agent should be used?'},
+    'bn-b2-ot':{tr:'Uygulamanızda gram-negatif kapsam ekleniyor mu?',en:'Do you add gram-negative coverage in your practice?'},
+    'bn-b2-eh':{tr:'Gram-negatif kapsam eklenmeli midir?',en:'Should gram-negative coverage be added?'},
+    'bn-b3-ot':{tr:'Uygulamanızda hangi ajan tercih ediliyor?',en:'Which agent do you prefer in your practice?'},
+    'bn-b3-eh':{tr:'Hangi ajan tercih edilmelidir?',en:'Which agent should be preferred?'},
+    'bn-b4-ot':{tr:'Uygulamanızda penisilin ekleniyor mu?',en:'Do you add penicillin in your practice?'},
+    'bn-b4-eh':{tr:'Penisilin eklenmeli midir?',en:'Should penicillin be added?'},
+    'bn-b5-ot':{tr:'Uygulamanızda hangi ajan tercih ediliyor?',en:'Which agent do you prefer in your practice?'},
+    'bn-b5-eh':{tr:'Hangi ajan önerilmelidir?',en:'Which agent should be recommended?'},
+    'bn-b6a-ot':{tr:'Uygulamanızda hangi doz tercih ediliyor?',en:'Which dose do you prefer in your practice?'},
+    'bn-b6a-eh':{tr:'Hangi doz öneriniz var?',en:'Which dose do you recommend?'},
+    'bn-b6b-ot':{tr:'Uygulamanızda doz artırımı yapıyor musunuz?',en:'Do you increase the dose in your practice?'},
+    'bn-b6b-eh':{tr:'Doz artırımı öneriyor musunuz?',en:'Do you recommend a dose increase?'},
+    'bn-c1-ot':{tr:'Uygulamanızda kullanılan süre?',en:'What is the duration of your practice?'},
+    'bn-c1-eh':{tr:'Uygun gördüğünüz süre?',en:'What duration should be applied?'},
+    'bn-c2-ot':{tr:'Uygulamanızda kullanılan süre?',en:'What is the duration of your practice?'},
+    'bn-c2-eh':{tr:'Uygun gördüğünüz süre?',en:'What duration should be applied?'},
+    'bn-c3-ot':{tr:'Uygulamanızda veriliyor mu?',en:'What is your practice?'},
+    'bn-c3-eh':{tr:'Verilmeli midir?',en:'What should be the practice?'},
+    'bn-e3-ot':{tr:'Uygulamanızda ne zaman yapılıyor?',en:'When is it performed in your practice?'},
+    'bn-e3-eh':{tr:'Ne zaman yapılmalıdır?',en:'When should it be performed?'},
+    'bn-e4-ot':{tr:'Uygulamanızda ne kullanılıyor?',en:'Which solution do you use in your practice?'},
+    'bn-e4-eh':{tr:'Hangi solüsyon tercih edilmelidir?',en:'Which solution is appropriate for infection prevention?'},
+    'bn-e5-ot':{tr:'Uygulamanızda alınıyor mu?',en:'Are samples obtained in your practice?'},
+    'bn-e5-eh':{tr:'Alınmalı mıdır?',en:'Should samples be obtained?'},
+    'bn-e6-ot':{tr:'Uygulamanızda nasıl yapılıyor?',en:'How is it performed in your practice?'},
+    'bn-e6-eh':{tr:'Enfeksiyon önleme açısından hangi yöntem uygun bulunmaktadır?',en:'Which method is appropriate for infection prevention?'},
+    'bn-f1-ot':{tr:'Uygulamanızda lokal antibiyotik ajan kullanılıyor mu?',en:'Do you use local antibiotic agents in your practice?'},
+    'bn-f1-eh':{tr:'Lokal antibiyotik ajan kullanılmalı mıdır?',en:'Should local antibiotic agents be used?'},
+    'd1-1':{tr:'Ortopedi ve Travmatoloji',en:'Orthopedics and Traumatology'},
+    'd1-2':{tr:'Enfeksiyon Hastalıkları',en:'Infectious Diseases'},
+    'd2-1':{tr:'Asistan doktor (uzmanlık eğitimi devam ediyor)',en:'Resident (specialty training in progress)'},
+    'd2-2':{tr:'0–5 yıl',en:'0–5 years'},
+    'd2-3':{tr:'6–10 yıl',en:'6–10 years'},
+    'd2-4':{tr:'11–15 yıl',en:'11–15 years'},
+    'd2-5':{tr:'&gt;15 yıl',en:'>15 years'},
+    'd3-1':{tr:'Devlet / Özel hastane (2. basamak)',en:'Secondary care (community / district hospital)'},
+    'd3-2':{tr:'Eğitim-araştırma / Üniversite / Vakıf hastanesi (3. basamak)',en:'Tertiary care (university / training & research hospital)'},
+    'd4-1':{tr:'&lt;2 vaka',en:'<2 cases'},
+    'd4-2':{tr:'2–5 vaka',en:'2–5 cases'},
+    'd4-3':{tr:'&gt;5 vaka',en:'>5 cases'},
+    'd4-4':{tr:'Bilmiyorum',en:'I don\'t know'},
+    'd5-1':{tr:'Evet, yazılı protokol var',en:'Yes, written protocol exists'},
+    'd5-2':{tr:'Yazılı protokol yok ama yerleşik rutin uygulama mevcut',en:'No written protocol, but an established routine practice exists'},
+    'd5-3':{tr:'Hayır',en:'No'},
+    'd5-4':{tr:'Bilmiyorum',en:'I don\'t know'},
+    'a1-1':{tr:'≤1 saat (yaralanma sonrası)',en:'≤1 hour (post-injury)'},
+    'a1-2':{tr:'1–3 saat içinde',en:'1–3 hours'},
+    'a1-3':{tr:'3–6 saat içinde',en:'3–6 hours'},
+    'a1-4':{tr:'>6 saat içinde',en:'>6 hours'},
+    'a1-5':{tr:'Debridman sırasında / sonrasında',en:'During / after debridement'},
+    'a1-6':{tr:'Bilmiyorum',en:'I don\'t know'},
+    'a2-1':{tr:'Tanı gecikmesi',en:'Delay in diagnosis'},
+    'a2-2':{tr:'Acil serviste yoğunluk',en:'Emergency department crowding/workload'},
+    'a2-3':{tr:'İlaç temini sorunu',en:'Drug supply / pharmacy delay'},
+    'a2-4':{tr:'Konsültasyon bekleme süresi',en:'Waiting for consultation (Infectious Diseases / Orthopedics)'},
+    'a2-5':{tr:'Gecikme yaşanmıyor',en:'No delay encountered'},
+    'a2-6':{tr:'Diğer',en:'Other'},
+    'a3-1':{tr:'Acil servis hekimi',en:'Emergency department physician'},
+    'a3-2':{tr:'Ortopedi ve Travmatoloji',en:'Orthopedics and Traumatology'},
+    'a3-3':{tr:'Enfeksiyon Hastalıkları',en:'Infectious Diseases'},
+    'a3-4':{tr:'Hemşire (protokol/order set)',en:'Nurse (protocol/order set)'},
+    'a3-5':{tr:'Değişken (vakaya göre)',en:'Variable (case-dependent)'},
+    'a3-6':{tr:'Bilmiyorum',en:'I don\'t know'},
+    'b1-1':{tr:'Sefazolin',en:'Cefazolin'},
+    'b1-2':{tr:'Ampisilin-sulbaktam',en:'Ampicillin-sulbactam'},
+    'b1-3':{tr:'Seftriakson',en:'Ceftriaxone'},
+    'b1-4':{tr:'Klindamisin',en:'Clindamycin'},
+    'b1-5':{tr:'Diğer',en:'Other'},
+    'b2-1':{tr:'Evet, rutin olarak',en:'Yes, routinely'},
+    'b2-2':{tr:'Evet, kontaminasyon durumuna göre',en:'Yes, depending on contamination'},
+    'b2-3':{tr:'Hayır',en:'No'},
+    'b3-1':{tr:'Aminoglikozid (gentamisin vb.)',en:'Aminoglycoside (gentamicin/amikacin)'},
+    'b3-2':{tr:'Piperasilin-tazobaktam',en:'Piperacillin-tazobactam'},
+    'b3-3':{tr:'Siprofloksasin',en:'Ciprofloxacin'},
+    'b3-4':{tr:'Ek ajan gerekli değil',en:'No additional agent needed'},
+    'b3-5':{tr:'Diğer',en:'Other'},
+    'b4-1':{tr:'Evet, rutin olarak',en:'Yes, routinely'},
+    'b4-2':{tr:'Evet, duruma göre',en:'Yes, depending on the situation'},
+    'b4-3':{tr:'Hayır',en:'No'},
+    'b5-1':{tr:'Klindamisin',en:'Clindamycin'},
+    'b5-2':{tr:'Vankomisin',en:'Vancomycin'},
+    'b5-3':{tr:'Florokinolon',en:'Fluoroquinolone'},
+    'b5-4':{tr:'Enfeksiyon Hastalıkları uzmanına danışırım',en:'I would consult Infectious Diseases'},
+    'b5-5':{tr:'Kurumumda standart yok',en:'No standard at my institution'},
+    'b5-6':{tr:'Diğer',en:'Other'},
+    'b6a-1':{tr:'1 g IV',en:'1 g IV'},
+    'b6a-2':{tr:'2 g IV',en:'2 g IV'},
+    'b6a-3':{tr:'3 g IV',en:'3 g IV'},
+    'b6a-4':{tr:'Kurumsal protokole göre değişir',en:'Varies according to institutional protocol'},
+    'b6a-5':{tr:'Sefazolin kullanmıyorum / önermiyorum',en:'I don\'t use / recommend cefazolin'},
+    'b6a-6':{tr:'Fikrim yok / rutin önerim yok',en:'No opinion / no routine recommendation'},
+    'b6b-1':{tr:'Hayır, aynı dozu kullanırım',en:'No, I use the same dose'},
+    'b6b-2':{tr:'Evet, 3 g’a çıkarım',en:'Yes, I increase to 3 g'},
+    'b6b-3':{tr:'Evet, başka doza çıkarım',en:'Yes, I increase to a different dose'},
+    'b6b-4':{tr:'Duruma göre değişir',en:'Varies by case'},
+    'b6b-5':{tr:'Bilmiyorum / fikrim yok',en:'I don\'t know / no opinion'},
+    'c1-1':{tr:'≤24 saat',en:'≤24 hours'},
+    'c1-2':{tr:'24–48 saat',en:'24–48 hours'},
+    'c1-3':{tr:'48–72 saat',en:'48–72 hours'},
+    'c1-4':{tr:'&gt;72 saat',en:'>72 hours'},
+    'c1-5':{tr:'Taburculuğa kadar',en:'Until discharge'},
+    'c1-6':{tr:'Yara kapanmasından sonra 24 saate kadar',en:'Up to 24 hours after wound closure'},
+    'c1-7':{tr:'Definitif yumuşak doku örtümüne kadar',en:'Until definitive soft tissue coverage'},
+    'c2-1':{tr:'≤24 saat',en:'≤24 hours'},
+    'c2-2':{tr:'24–48 saat',en:'24–48 hours'},
+    'c2-3':{tr:'48–72 saat',en:'48–72 hours'},
+    'c2-4':{tr:'&gt;72 saat',en:'>72 hours'},
+    'c2-5':{tr:'Taburculuğa kadar',en:'Until discharge'},
+    'c2-6':{tr:'Yara kapanmasından sonra 24 saate kadar',en:'Up to 24 hours after wound closure'},
+    'c2-7':{tr:'Definitif yumuşak doku örtümüne kadar',en:'Until definitive soft tissue coverage'},
+    'c3-1':{tr:'Evet, tüm açık kırıklara rutin',en:'Yes, routinely'},
+    'c3-2':{tr:'Evet, yalnızca tip III\'te',en:'Only for type III'},
+    'c3-3':{tr:'Hayır',en:'No'},
+    'c4-1':{tr:'Kılavuz önerisi (≤24–72 saat)',en:'Guideline recommendation (≤24–72 hours)'},
+    'c4-2':{tr:'Debridmanın tamamlanması',en:'Completion of debridement'},
+    'c4-3':{tr:'Yara kapanması',en:'Wound closure'},
+    'c4-4':{tr:'Taburculuk',en:'Discharge'},
+    'c4-5':{tr:'Klinik / laboratuvar bulguları (CRP, ateş, lökosit vb.)',en:'Clinical/laboratory findings (CRP, fever, WBC, etc.)'},
+    'e1-1':{tr:'&lt;6 saat',en:'<6 hours'},
+    'e1-2':{tr:'6–12 saat',en:'6–12 hours'},
+    'e1-3':{tr:'12–24 saat',en:'12–24 hours'},
+    'e1-4':{tr:'&gt;24 saat',en:'>24 hours'},
+    'e2-1':{tr:'&lt;6 saat',en:'<6 hours'},
+    'e2-2':{tr:'6–12 saat',en:'6–12 hours'},
+    'e2-3':{tr:'12–24 saat',en:'12–24 hours'},
+    'e2-4':{tr:'&gt;24 saat',en:'>24 hours'},
+    'e3-1':{tr:'Derhal — acil liste, ilk müsait ameliyathane',en:'Immediately'},
+    'e3-2':{tr:'İlk 6 saat içinde',en:'Within 6 hours'},
+    'e3-3':{tr:'6–24 saat içinde (aynı gün elektif)',en:'6–24 hours'},
+    'e3-4':{tr:'24–72 saat içinde (ertesi gün listesi)',en:'24–72 hours'},
+    'e3-5':{tr:'&gt;72 saat (elektif planlama)',en:'>72 hours'},
+    'e4-1':{tr:'Serum fizyolojik',en:'Normal saline'},
+    'e4-2':{tr:'Povidon-iyodürlü solüsyon',en:'Povidone-iodine'},
+    'e4-3':{tr:'Dakin solüsyonu',en:'Dakin\'s solution'},
+    'e4-4':{tr:'Antibiyotik eklenmiş solüsyon',en:'Antibiotic-supplemented solution'},
+    'e4-5':{tr:'Diğer',en:'Other'},
+    'e5-1':{tr:'Evet, rutin olarak',en:'Yes, routinely'},
+    'e5-2':{tr:'Evet, seçici koşullarda',en:'Yes, selectively'},
+    'e5-3':{tr:'Hayır',en:'No'},
+    'e6-1':{tr:'Yerçekimi / düşük basınç (gravity flow)',en:'Gravity flow / low pressure'},
+    'e6-2':{tr:'Düşük basınçlı pulsatil lavaj',en:'Low-pressure pulsatile lavage'},
+    'e6-3':{tr:'Yüksek basınçlı pulsatil lavaj',en:'High-pressure pulsatile lavage'},
+    'e6-4':{tr:'Manuel sıkma şişesi / enjektör',en:'Manual squeeze bottle / syringe'},
+    'e6-5':{tr:'Standart yöntem yok / değişken',en:'No standard method / variable'},
+    'e6-6':{tr:'Bilmiyorum',en:'I don\'t know'},
+    'f1-1':{tr:'Evet, rutin olarak',en:'Yes, routinely'},
+    'f1-2':{tr:'Evet, yalnızca tip III kırıklarda',en:'Only for type III'},
+    'f1-3':{tr:'Hayır',en:'No'},
+    'f1-4':{tr:'Kurumumda mevcut değil, ancak kullanmak isterdim',en:'Not available but I would use it'},
+    'f2-1':{tr:'Her vakada rutin olarak',en:'For every case'},
+    'f2-2':{tr:'Yalnızca tip III kırıklarda',en:'Only for type III'},
+    'f2-3':{tr:'Yalnızca komplikasyon / enfeksiyon şüphesinde',en:'Only in case of complications'},
+    'f2-4':{tr:'Konsültasyon gerekli değil',en:'Not necessary'},
+    'f4-1':{tr:'Evet',en:'Yes'},
+    'f4-2':{tr:'Hayır, ama olmalı',en:'No, but should exist'},
+    'f4-3':{tr:'Hayır, gerekli değil',en:'No, not needed'},
+    'f4-4':{tr:'Bilmiyorum',en:'I don\'t know'},
+    'g1-1':{tr:'BOAST-4 / BOA–BAPRAS Open Fracture Guideline <strong>(2017)</strong>',en:'BOAST-4 / BOA–BAPRAS Open Fracture Guideline <strong>(2017)</strong>'},
+    'g1-2':{tr:'NICE NG37 – Complex Fractures <strong>(2016)</strong>',en:'NICE NG37 – Complex Fractures <strong>(2016)</strong>'},
+    'g1-3':{tr:'EAST – Practice Management Guideline for Open Fractures <strong>(2020)</strong>',en:'EAST – Practice Management Guideline for Open Fractures <strong>(2020)</strong>'},
+    'g1-4':{tr:'AAOS – Prevention of SSI After Major Extremity Trauma CPG <strong>(2022)</strong>',en:'AAOS – Prevention of SSI After Major Extremity Trauma CPG <strong>(2022)</strong>'},
+    'g1-5':{tr:'SIS – Open Extremity Fracture Antibiotic Guideline <strong>(2022)</strong>',en:'SIS – Open Extremity Fracture Antibiotic Guideline <strong>(2022)</strong>'},
+    'g1-6':{tr:'AAST – Antibiotic Prophylaxis in Injury Clinical Consensus <strong>(2024)</strong>',en:'AAST – Antibiotic Prophylaxis in Injury Clinical Consensus <strong>(2024)</strong>'},
+    'g1-7':{tr:'Hiçbirini bilmiyorum',en:'I am not familiar with any of them'},
+    'g2-fy':{tr:'Fikrim yok',en:'No opinion'},
+    'g3-fy':{tr:'Fikrim yok',en:'No opinion'},
+    'h1-1':{tr:'Antibiyotik zamanlaması',en:'Antibiotic timing'},
+    'h1-2':{tr:'Antibiyotik seçimi',en:'Antibiotic selection'},
+    'h1-3':{tr:'Profilaksi süresi',en:'Prophylaxis duration'},
+    'h1-4':{tr:'Debridman kalitesi / süresi',en:'Debridement quality / timing'},
+    'h1-5':{tr:'İrigasyon solüsyonu seçimi',en:'Irrigation solution choice'},
+    'h1-6':{tr:'Yerel antibiyotik kullanımı',en:'Local antibiotic use'},
+    'h1-7':{tr:'Enfeksiyon Hastalıkları konsültasyonu',en:'Infectious Diseases consultation'},
+    'f3-d1':{tr:'Hiç değiştirmez',en:'Never changes'},
+    'f3-d2':{tr:'Nadiren',en:'Rarely'},
+    'f3-d3':{tr:'Bazen',en:'Sometimes'},
+    'f3-d4':{tr:'Çoğunlukla',en:'Often'},
+    'f3-d5':{tr:'Çok sık değiştirir',en:'Very frequently changes'},
+    'g2-d1':{tr:'Hiç uyumlu değil',en:'Not at all aligned'},
+    'g2-d2':{tr:'Az uyumlu',en:'Slightly aligned'},
+    'g2-d3':{tr:'Kısmen uyumlu',en:'Partially aligned'},
+    'g2-d4':{tr:'Büyük ölçüde',en:'Largely aligned'},
+    'g2-d5':{tr:'Tam uyumlu',en:'Fully aligned'},
+    'g3-d1':{tr:'Tam yetersiz',en:'Completely insufficient'},
+    'g3-d2':{tr:'Yetersiz',en:'Insufficient'},
+    'g3-d3':{tr:'Kısmen',en:'Partially'},
+    'g3-d4':{tr:'Yeterli',en:'Sufficient'},
+    'g3-d5':{tr:'Tam yeterli',en:'Fully sufficient'}
   };
   Object.keys(T).forEach(function(id){
     var el=document.getElementById(id);
     if(el)el.innerHTML=T[id][l]||T[id]['tr'];
   });
+  // Badge translations (Ortopedi/Enfeksiyon → Orthopedics/Infectious Diseases)
+  var bdOt = l === 'en' ? 'Orthopedics' : 'Ortopedi';
+  var bdEh = l === 'en' ? 'Infectious Diseases' : 'Enfeksiyon';
+  document.querySelectorAll('.bn.ot .bd').forEach(function(el){el.textContent = bdOt;});
+  document.querySelectorAll('.bn.eh .bd').forEach(function(el){el.textContent = bdEh;});
+  // Multi-step: dil değişiminde mevcut step'in section adını güncelle
+  if(typeof currentStep !== 'undefined' && document.getElementById('prog-section-name')){
+    document.getElementById('prog-section-name').textContent = sectionNames[currentStep][l] || sectionNames[currentStep].tr;
+  }
+  void(0);
 }
 function applyBranch(b){
   document.querySelectorAll('.bn').forEach(function(el){
@@ -257,13 +566,15 @@ document.querySelectorAll('input').forEach(function(i){i.addEventListener('chang
 document.querySelectorAll('.ol').forEach(function(l){l.addEventListener('click',function(){var sy=window.scrollY;setTimeout(function(){window.scrollTo(0,sy);},0);});});
 function collectData(){
   var d={lang:lang,created_at:new Date().toISOString()};
-  ['d1','d2','d3','d4','d5','a1','a3','b1','b2','b3','b4','b5','c1','c2','c3','e1','e2','e3','e4','e5','e6','f1','f2','f3','f4','g2','g3'].forEach(function(n){
+  ['d1','d2','d3','d4','d5','a1','a3','b1','b2','b3','b4','b5','b6a','b6b','c1','c2','c3','e1','e2','e3','e4','e5','e6','f1','f2','f3','f4','g2','g3'].forEach(function(n){
     var el=document.querySelector('input[name="'+n+'"]:checked');d[n]=el?el.value:'';
   });
   ['a2','c4','g1','h1'].forEach(function(n){d[n]=Array.from(document.querySelectorAll('input[name="'+n+'"]:checked')).map(function(e){return e.value;});});
   
   d.a2_other=document.getElementById('a2-dinp').value;
   d.e4_other=document.getElementById('e4-dinp').value;
+  var b6bDinp=document.getElementById('b6b-dinp');
+  d.b6b_other=b6bDinp?b6bDinp.value:'';
   return d;
 }
 async function submitSurvey(){
@@ -289,6 +600,82 @@ async function submitSurvey(){
     btn.querySelector('#save-btn-t').textContent=lang==='tr'?'Yanıtları Gönder':'Submit Responses';
   }
 }
+
+// === B6 cascading logic ===
+document.querySelectorAll('input[name="b6a"]').forEach(function(r){
+  r.addEventListener('change', function(){
+    var b6b = document.getElementById('b6b-block');
+    if (this.value === '1g' || this.value === '2g') {
+      b6b.style.display = 'block';
+    } else {
+      b6b.style.display = 'none';
+      // B6b seçimlerini temizle
+      document.querySelectorAll('input[name="b6b"]').forEach(function(x){x.checked=false;});
+      var dinp = document.getElementById('b6b-dinp');
+      if (dinp) dinp.value = '';
+    }
+  });
+});
+// "Diger" seçilirse text input enable
+var b6bDcb = document.getElementById('b6b-dcb');
+var b6bDinp = document.getElementById('b6b-dinp');
+if (b6bDcb && b6bDinp) {
+  document.querySelectorAll('input[name="b6b"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      b6bDinp.disabled = !b6bDcb.checked;
+    });
+  });
+}
+
+
+// === Multi-step wizard ===
+var currentStep = 1;
+var totalSteps = 8;
+var sectionNames = {
+  1: {tr: "Bölüm 1: Demografik Bilgiler", en: "Section 1: Demographics"},
+  2: {tr: "Bölüm 2: Antibiyotik Başlama Zamanlaması", en: "Section 2: Antibiotic Initiation Timing"},
+  3: {tr: "Bölüm 3: Antibiyotik Seçimi", en: "Section 3: Antibiotic Selection"},
+  4: {tr: "Bölüm 4: Profilaktik Antibiyotik Süresi", en: "Section 4: Prophylactic Antibiotic Duration"},
+  5: {tr: "Bölüm 5: Debridman ve İrigasyon", en: "Section 5: Debridement & Irrigation"},
+  6: {tr: "Bölüm 6: Yerel Antibiyotik ve Konsültasyon", en: "Section 6: Local Antibiotic & Consultation"},
+  7: {tr: "Bölüm 7: Kılavuz Farkındalığı", en: "Section 7: Guideline Awareness"},
+  8: {tr: "Bölüm 8: KİE Önleme Öncelikleri", en: "Section 8: FRI Prevention Priorities"}
+};
+
+function showStep(n){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  var target = document.querySelector('.step[data-step="'+n+'"]');
+  if(target) target.classList.add('active');
+  currentStep = n;
+  
+  // Progress
+  var pct = Math.round((n / totalSteps) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-current').textContent = n;
+  var lng = (typeof lang !== 'undefined' ? lang : 'tr');
+  document.getElementById('prog-section-name').textContent = sectionNames[n][lng] || sectionNames[n].tr;
+  
+  // Smooth scroll to top of step
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function goStep(delta){
+  var newStep = currentStep + delta;
+  if(newStep < 1 || newStep > totalSteps) return;
+  showStep(newStep);
+}
+
+// İlk adımı göster
+document.addEventListener('DOMContentLoaded', function(){
+  showStep(1);
+});
+// DOMContentLoaded zaten geçtiyse hemen çalıştır
+if(document.readyState === 'loading'){
+  // event listener çalışacak
+} else {
+  showStep(1);
+}
+
 </script>
 </body>
 </html>
