@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
@@ -149,8 +149,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g0);color:var(
   <div class="hdr-top">
     <span id="txt-hosp">Dr. Suat Günsel Girne Üniversitesi Hastanesi — Ortopedi ve Travmatoloji</span>
     <div class="lbts">
-      <button class="lbt on" onclick="setLang('tr')" id="btn-tr">TR</button>
-      <button class="lbt" onclick="setLang('en')" id="btn-en">EN</button>
+      <button class="lbt" onclick="setLang('tr')" id="btn-tr">TR</button>
+      <button class="lbt on" onclick="setLang('en')" id="btn-en">EN</button>
     </div>
   </div>
   <div class="hdr-main">
@@ -264,7 +264,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g0);color:var(
 
 <script>
 const SB_URL='https://dohxshaniqgmxjdchhjd.supabase.co',SB_KEY='sb_publishable_YDMDQ80hycN_5DdAENn87Q_LpiTyOjC';
-var lang='tr';
+var lang='en';
 function setLang(l){
   lang=l;
   document.documentElement.lang=l;
@@ -667,6 +667,7 @@ function goStep(delta){
 
 // İlk adımı göster
 document.addEventListener('DOMContentLoaded', function(){
+  setLang('en');
   showStep(1);
 });
 // DOMContentLoaded zaten geçtiyse hemen çalıştır
